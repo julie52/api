@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Mes projets</title>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  </head>
+
+  <body>
+
+    <form action="http://blondeau.chalon.codeur.online/julieb-portfolio/API/api.php" method="post">
+        <h1>Ajout d'un projet</h1>
+    <label for="nom_du_projet">Titre :</label><br>
+    <input name="nom_du_projet" id="nom_du_projet" type="text">
+    <br><br>
+    <label for="techno_utilises">Langages utilisés :</label><br>
+    <input name="techno_utilises" id="techno_utilises" type="text">
+    <br><br>
+    <label for="description">Description :</label><br>
+    <textarea name="description" id="description" type="text"></textarea>
+    <br><br>
+    <input id="bouton" type="submit" name="publier" value="Publier">
+    <br><br><br>
+       <h2>Supression d'un projet</h2>
+       <label for="titre"> Titre du projet : </label>
+   <select id="titre_suppr" name="supprimer"></select>
+ <!--  <input id="titre_suppr" type="text" name="supprimer"> -->
+   <input type="submit" id="supprimer" name="supprimer" value="Supprimer">
+    <br><br><br>  <br><br><br>
+    </form>
+     <div id="result"></div>
+    <script>
+        
+      //AJOUT
+      $(document).ready(function () {
+        $('form').on('submit',function(e) {
+          e.preventDefault();
+            var nom_du_projet = document.getElementById('nom_du_projet').value;
+            var techno_utilises = document.getElementById('techno_utilises').value;
+            var description = document.getElementById('description').value;
+            var infos = {
+              infos : {
+                nom_du_projet: nom_du_projet,
+                techno_utilises : techno_utilises,
+                description: description
+                  }
+                }
+            $.ajax({
+              type: "POST",
+              url: "http://blondeau.chalon.codeur.online/julieb-portfolio/API/api.php",
+              contentType : "application/json",
+              data: JSON.stringify(infos),
+              success: function(msg) {
+                  }
+                 });
+               })
+        });
+      //Suppression
+      $(document).ready(function () {
+      $.ajax({
+        type: 'GET',
+        url:'http://blondeau.chalon.codeur.online/julieb-portfolio/API/api.php',
+        success: function (projets) {
+
+          for (var i = 0; i < projets.length; i++) {
+            document.getElementById('titre_suppr').innerHTML += '<option value="'+ projets[i].nom_du_projet +'">'+ projets[i].nom_du_projet +'</option>';
+          }
+        }
+      });
+    });
+
+      $('#supprimer').on('click',function(e) {
+        e.preventDefault();
+        var titre = document.getElementById('titre_suppr').value;
+        var infos = {
+          infos : {
+            nom_du_projet: nom_du_projet,
+            }
+          }
+      $.ajax({
+        method: "DELETE",
+        url:"http://blondeau.chalon.codeur.online/julieb-portfolio/API/api.php",
+        contentType :'application/json',
+        data:JSON.stringify(infos),
+        success: function(msg) {
+        }
+      });
+     });
+
+
+         //Affichage
+      $.ajax({
+        type: 'GET',
+        url: 'http://blondeau.chalon.codeur.online/julieb-portfolio/API/api.php',
+        success: function (projets) {
+          for (var i = 0; i < projets.length; i++) {
+            document.getElementById('result').innerHTML +=
+            "<p>" +
+            "<strong>" + projets[i].nom_du_projet + "</strong><br>" +
+            projets[i].techno_utilises + "<br>" +
+            projets[i].description + "<br><br>""</p><br><br><br><br><br>";
+           }
+         }
+       });
+     </script>
+  </body>
+</html>
